@@ -1,9 +1,9 @@
 // Import modules and data used for the CLI program
-import promptSync from "prompt-sync";
-import chalk from "chalk";
-import { parseCommand } from "./command-parser.js";
-import { handleTraineeCommand } from "./traineeCommands.js";
-import { handleCourseCommand } from "./courseCommands.js";
+import promptSync from 'prompt-sync';
+import chalk from 'chalk';
+import { parseCommand } from './command-parser.js';
+import { handleTraineeCommand } from './traineeCommands.js';
+import { handleCourseCommand } from './courseCommands.js';
 
 // Defines prompt variable and allows for exiting using CTRL+C
 const prompt = promptSync({ sigint: true });
@@ -11,30 +11,32 @@ const prompt = promptSync({ sigint: true });
 // Welcome message for CLI program
 console.log(
   chalk.green(
-    'School Manager CLI: type "help" for a list of available commands "exit" to quit.',
-  ),
+    'School Manager CLI: type "help" for a list of available commands "exit" to quit.'
+  )
 );
 
 // Main application flow prompting for user input
+export function startCLI() {}
+// Important note: exported the startCLI function so you can test that it ran without the program actually going into an infinite loop.
 while (true) {
   try {
-    const input = prompt("> ").trim();
+    const input = prompt('> ').trim();
     if (!input) {
       console.log(
         chalk.gray(
-          'Please enter a command. Type "help" for a list of available commands.',
-        ),
+          'Please enter a command. Type "help" for a list of available commands.'
+        )
       );
       continue;
     }
     // Command to exit the application with goodbye message
     const normalizedInput = input.toLowerCase();
-    if (normalizedInput === "exit" || normalizedInput === "quit") {
-      console.log(chalk.yellow("Exiting application. Goodbye."));
+    if (normalizedInput === 'exit' || normalizedInput === 'quit') {
+      console.log(chalk.yellow('Exiting application. Goodbye.'));
       break;
     }
     // Show list of available commands
-    if (normalizedInput === "help") {
+    if (normalizedInput === 'help') {
       console.log(
         chalk.cyan(`
 Basic commands:
@@ -54,7 +56,7 @@ Basic commands:
   course leave <courseId> <traineeId>  - remove trainee from course
 
 Type "exit" or "quit" to close.
-      `),
+      `)
       );
       continue;
     }
@@ -64,13 +66,13 @@ Type "exit" or "quit" to close.
 
     // Check whether running trainee commands or course commands otherwise return error
     // When running command check for subcommands and passed arguments
-    if (command === "trainee") {
+    if (command === 'trainee') {
       handleTraineeCommand(subcommand, args);
-    } else if (command === "course") {
+    } else if (command === 'course') {
       handleCourseCommand(subcommand, args);
     } else {
       console.log(
-        chalk.red('Error: unknown primary command. Type "help" for commands.'),
+        chalk.red('Error: unknown primary command. Type "help" for commands.')
       );
     }
   } catch (error) {
