@@ -1,13 +1,21 @@
 // tests/index.test.js
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 
-// ---- MOCK prompt-sync ----
+// ------------------------------------------------------
+// 1) DEFINE mockPrompt BEFORE ANY vi.mock()
+// ------------------------------------------------------
 const mockPrompt = vi.fn();
+
+// ------------------------------------------------------
+// 2) MOCK prompt-sync (must come immediately after mockPrompt)
+// ------------------------------------------------------
 vi.mock('prompt-sync', () => ({
   default: () => mockPrompt,
 }));
 
-// ---- MOCK chalk ----
+// ------------------------------------------------------
+// 3) MOCK chalk
+// ------------------------------------------------------
 vi.mock('chalk', () => ({
   default: {
     green: (msg) => msg,
@@ -18,16 +26,18 @@ vi.mock('chalk', () => ({
   },
 }));
 
-// ---- MOCK parseCommand ----
-import { parseCommand } from '../src/command-parser.js';
+// ------------------------------------------------------
+// 4) MOCK command-parser
+// ------------------------------------------------------
 vi.mock('../src/command-parser.js', () => ({
   parseCommand: vi.fn(),
 }));
 
-// ---- MOCK handlers ----
-import { handleTraineeCommand } from '../src/traineeCommands.js';
-import { handleCourseCommand } from '../src/courseCommands.js';
+import { parseCommand } from '../src/command-parser.js';
 
+// ------------------------------------------------------
+// 5) MOCK trainee & course handlers
+// ------------------------------------------------------
 vi.mock('../src/traineeCommands.js', () => ({
   handleTraineeCommand: vi.fn(),
 }));
@@ -36,7 +46,12 @@ vi.mock('../src/courseCommands.js', () => ({
   handleCourseCommand: vi.fn(),
 }));
 
-// ---- Import index AFTER mocks ----
+import { handleTraineeCommand } from '../src/traineeCommands.js';
+import { handleCourseCommand } from '../src/courseCommands.js';
+
+// ------------------------------------------------------
+// 6) IMPORT index.js AFTER ALL MOCKS
+// ------------------------------------------------------
 import { startCLI } from '../src/index.js';
 
 describe('Index CLI routing', () => {
@@ -46,34 +61,37 @@ describe('Index CLI routing', () => {
 
   test('routes trainee commands correctly', () => {
     mockPrompt
-      .mockReturnValueOnce('trainee add Ali Rezaei')
+      .mockReturnValueOnce('TRAINEE ADD Hamed Razizadeh')
       .mockReturnValueOnce('exit');
 
     parseCommand.mockReturnValue({
-      command: 'trainee',
-      subcommand: 'add',
-      args: ['Ali', 'Rezaei'],
+      command: 'TRAINEE',
+      subcommand: 'ADD',
+      args: ['Hamed', 'Razizadeh'],
     });
 
     startCLI();
 
-    expect(handleTraineeCommand).toHaveBeenCalledWith('add', ['Ali', 'Rezaei']);
+    expect(handleTraineeCommand).toHaveBeenCalledWith('ADD', [
+      'Hamed',
+      'Razizadeh',
+    ]);
   });
 
   test('routes course commands correctly', () => {
     mockPrompt
-      .mockReturnValueOnce('course join 12 10')
+      .mockReturnValueOnce('COURSE JOIN 12 10')
       .mockReturnValueOnce('exit');
 
     parseCommand.mockReturnValue({
-      command: 'course',
-      subcommand: 'join',
+      command: 'COURSE',
+      subcommand: 'JOIN',
       args: ['12', '10'],
     });
 
     startCLI();
 
-    expect(handleCourseCommand).toHaveBeenCalledWith('join', ['12', '10']);
+    expect(handleCourseCommand).toHaveBeenCalledWith('JOIN', ['12', '10']);
   });
 
   test('shows error for unknown command', () => {
@@ -84,7 +102,7 @@ describe('Index CLI routing', () => {
       .mockReturnValueOnce('exit');
 
     parseCommand.mockReturnValue({
-      command: 'unknown',
+      command: 'UNKNOWN',
       subcommand: '',
       args: [],
     });

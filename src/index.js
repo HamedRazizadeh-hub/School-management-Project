@@ -1,44 +1,49 @@
-// Import modules and data used for the CLI program
+// Import modules
 import promptSync from 'prompt-sync';
 import chalk from 'chalk';
 import { parseCommand } from './command-parser.js';
 import { handleTraineeCommand } from './traineeCommands.js';
 import { handleCourseCommand } from './courseCommands.js';
 
-// Defines prompt variable and allows for exiting using CTRL+C
-const prompt = promptSync({ sigint: true });
+/**
+ * Starts the interactive CLI loop.
+ * All logic is inside this function so tests can run without executing the loop automatically.
+ */
+export function startCLI() {
+  const prompt = promptSync({ sigint: true });
 
-// Welcome message for CLI program
-console.log(
-  chalk.green(
-    'School Manager CLI: type "help" for a list of available commands "exit" to quit.'
-  )
-);
+  console.log(
+    chalk.green(
+      'School Manager CLI: type "help" for a list of available commands "exit" to quit.'
+    )
+  );
 
-// Main application flow prompting for user input
-export function startCLI() {}
-// Important note: exported the startCLI function so you can test that it ran without the program actually going into an infinite loop.
-while (true) {
-  try {
-    const input = prompt('> ').trim();
-    if (!input) {
-      console.log(
-        chalk.gray(
-          'Please enter a command. Type "help" for a list of available commands.'
-        )
-      );
-      continue;
-    }
-    // Command to exit the application with goodbye message
-    const normalizedInput = input.toLowerCase();
-    if (normalizedInput === 'exit' || normalizedInput === 'quit') {
-      console.log(chalk.yellow('Exiting application. Goodbye.'));
-      break;
-    }
-    // Show list of available commands
-    if (normalizedInput === 'help') {
-      console.log(
-        chalk.cyan(`
+  while (true) {
+    try {
+      const input = prompt('> ').trim();
+
+      // Empty input
+      if (!input) {
+        console.log(
+          chalk.gray(
+            'Please enter a command. Type "help" for a list of available commands.'
+          )
+        );
+        continue;
+      }
+
+      const normalizedInput = input.toLowerCase();
+
+      // Exit command
+      if (normalizedInput === 'exit' || normalizedInput === 'quit') {
+        console.log(chalk.yellow('Exiting application. Goodbye.'));
+        break;
+      }
+
+      // Help command
+      if (normalizedInput === 'help') {
+        console.log(
+          chalk.cyan(`
 Basic commands:
   trainee add <args>        - create a trainee
   trainee update <id> <...> - update trainee
@@ -56,26 +61,40 @@ Basic commands:
   course leave <courseId> <traineeId>  - remove trainee from course
 
 Type "exit" or "quit" to close.
-      `)
-      );
-      continue;
-    }
+        `)
+        );
+        continue;
+      }
 
-    // Destructure input and run function based on user input
-    const { command, subcommand, args } = parseCommand(input);
+      // Parse the command
+      const parsed = parseCommand(input);
 
-    // Check whether running trainee commands or course commands otherwise return error
-    // When running command check for subcommands and passed arguments
-    if (command === 'trainee') {
-      handleTraineeCommand(subcommand, args);
-    } else if (command === 'course') {
-      handleCourseCommand(subcommand, args);
-    } else {
-      console.log(
-        chalk.red('Error: unknown primary command. Type "help" for commands.')
-      );
+      // Invalid parse result
+      if (!parsed || parsed.error) {
+        console.log(
+          chalk.red('Error: unknown primary command. Type "help" for commands.')
+        );
+        continue;
+      }
+
+      let { command, subcommand, args } = parsed;
+
+      // Normalize for routing
+      const cmd = command.toUpperCase();
+      const sub = subcommand.toUpperCase();
+
+      // Route to trainee or course handlers
+      if (cmd === 'TRAINEE') {
+        handleTraineeCommand(sub, args);
+      } else if (cmd === 'COURSE') {
+        handleCourseCommand(sub, args);
+      } else {
+        console.log(
+          chalk.red('Error: unknown primary command. Type "help" for commands.')
+        );
+      }
+    } catch (error) {
+      console.log(chalk.red(`Error: ${error}`));
     }
-  } catch (error) {
-    console.log(chalk.red(`Error: ${error}`));
   }
 }
