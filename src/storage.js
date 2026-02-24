@@ -1,7 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DATA_DIR = path.resolve('data');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const DATA_DIR = path.join(__dirname, '..', 'data');
 const TRAINEE_DATA_FILE_PATH = path.join(DATA_DIR, 'trainees.json');
 const COURSE_DATA_FILE_PATH = path.join(DATA_DIR, 'courses.json');
 
