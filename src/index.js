@@ -98,3 +98,5 @@ Type "exit" or "quit" to close.
     }
   }
 }
+
+startCLI()
