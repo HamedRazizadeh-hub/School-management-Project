@@ -45,18 +45,20 @@ export function startCLI() {
         console.log(
           chalk.cyan(`
 Basic commands:
-  trainee add <args>        - create a trainee
-  trainee update <id> <...> - update trainee
-  trainee delete <id>       - delete trainee
-  trainee get <id>          - view a trainee
-  trainee list              - view all trainees
+  trainee add <firstName> <lastName>         - create a trainee
+  trainee update <ID> <firstName> <lastName> - update trainee
+  trainee search <query>      - search trainee
+  trainee delete <id>         - delete trainee
+  trainee get <id>            - view a trainee
+  trainee getall              - view all trainees
 
-  course add <args>         - create a course
-  course update <id> <...>  - update course
+  course add <name> <startDate>          - create a course
+  course update  <ID> <name> <startDate> - update course
   course delete <id>        - delete course
   course get <id>           - view a course
-  course list               - view all courses
+  course getall             - view all courses
 
+  course join <courseID> <traineeID> - add trainee to course
   course join <courseId> <traineeId>   - add trainee to course
   course leave <courseId> <traineeId>  - remove trainee from course
 
@@ -99,4 +101,4 @@ Type "exit" or "quit" to close.
   }
 }
 
-startCLI()
+startCLI();
