@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import { saveTraineeData, loadTraineeData } from "./storage.js";
+import chalk from 'chalk';
+import { saveTraineeData, loadTraineeData } from './storage.js';
 
 /**
  * Generates a unique 6‑digit numeric ID for a trainee.
@@ -22,9 +22,9 @@ function generateUniqueId(trainees) {
 function addTrainee(args) {
   // expect two parameters for first and last name
   if (args.length < 2) {
-    console.log(chalk.red("ERROR: Must provide first and last name"));
+    console.log(chalk.red('ERROR: Must provide first and last name'));
     return {
-      error: "ERROR: Must provide first and last name",
+      error: 'ERROR: Must provide first and last name',
     };
   }
 
@@ -52,8 +52,8 @@ function addTrainee(args) {
 function updateTrainee(args) {
   // expect three parameters: id, first name, last name
   if (args.length < 3) {
-    console.log(chalk.red("ERROR: Must provide ID, first name and last name"));
-    return { error: "ERROR: Must provide ID, first name and last name" };
+    console.log(chalk.red('ERROR: Must provide ID, first name and last name'));
+    return { error: 'ERROR: Must provide ID, first name and last name' };
   }
 
   const [idString, firstName, lastName] = args;
@@ -64,7 +64,7 @@ function updateTrainee(args) {
 
   if (!trainee) {
     console.log(chalk.red(`ERROR: Trainee with ID ${id} does not exist`));
-    return { error: "ERROR: Trainee with ID ${id} does not exist" };
+    return { error: 'ERROR: Trainee with ID ${id} does not exist' };
   }
 
   trainee.firstName = firstName;
@@ -82,8 +82,8 @@ function updateTrainee(args) {
  */
 function deleteTrainee(args) {
   if (args.length < 1) {
-    console.log(chalk.red("ERROR: Invalid trainee ID for deletion."));
-    return { error: "ERROR: Invalid trainee ID for deletion." };
+    console.log(chalk.red('ERROR: Invalid trainee ID for deletion.'));
+    return { error: 'ERROR: Invalid trainee ID for deletion.' };
   }
 
   const id = Number(args[0]);
@@ -100,7 +100,7 @@ function deleteTrainee(args) {
   saveTraineeData(trainees);
 
   console.log(
-    `DELETED: ${deleted.id} ${deleted.firstName} ${deleted.lastName}`,
+    `DELETED: ${deleted.id} ${deleted.firstName} ${deleted.lastName}`
   );
   return true;
 }
@@ -112,8 +112,8 @@ function deleteTrainee(args) {
  */
 function getTrainee(args) {
   if (args.length < 1) {
-    console.log(chalk.red("ERROR: Invalid trainee ID."));
-    return { error: "ERROR: Invalid trainee ID." };
+    console.log(chalk.red('ERROR: Invalid trainee ID.'));
+    return { error: 'ERROR: Invalid trainee ID.' };
   }
 
   const id = Number(args[0]);
@@ -136,7 +136,7 @@ function getAllTrainees() {
   const trainees = loadTraineeData();
 
   if (trainees.length === 0) {
-    console.log("No trainees found");
+    console.log('No trainees found');
     return [];
   }
 
@@ -164,13 +164,13 @@ function getAllTrainees() {
 // Implement search functionality
 // ensure a query is provided; treat whitespace-only as missing
 function searchTrainees(args) {
-  if (!args || args.length < 1 || String(args[0]).trim() === "") {
-    console.log(chalk.red("ERROR: Must provide a query"));
-    return { error: "ERROR: Must provide a query" };
+  if (!args || args.length < 1 || String(args[0]).trim() === '') {
+    console.log(chalk.red('ERROR: Must provide a query'));
+    return { error: 'ERROR: Must provide a query' };
   }
 
   // allow multi-word queries by joining args with spaces
-  const query = String(args.join(" ")).toLowerCase();
+  const query = String(args.join(' ')).toLowerCase();
   const trainees = loadTraineeData();
 
   // case-insensitive partial matching against first or last name
@@ -181,13 +181,13 @@ function searchTrainees(args) {
     );
   });
 
-  console.log("Results:");
-  trainees.forEach((t) => {
+  console.log('Results:');
+  matches.forEach((t) => {
     console.log(`${t.id} ${t.firstName} ${t.lastName}`);
   });
 
-  console.log(`Total: ${trainees.length}`);
-  return trainees;
+  console.log(`Total: ${matches.length}`);
+  return matches;
 }
 /**
  * ---------------- COMMAND HANDLER ----------------
@@ -208,33 +208,33 @@ export function handleTraineeCommand(subcommand, args) {
   const normalizedSub = subcommand.toUpperCase();
 
   switch (normalizedSub) {
-    case "ADD":
+    case 'ADD':
       // Creates a new trainee
       return addTrainee(args);
 
-    case "UPDATE":
+    case 'UPDATE':
       // Updates an existing trainee
       return updateTrainee(args);
 
-    case "DELETE":
+    case 'DELETE':
       // Deletes a trainee by ID
       return deleteTrainee(args);
 
-    case "GET":
+    case 'GET':
       // Retrieves a single trainee by ID
       return getTrainee(args);
 
-    case "GETALL":
-    case "LIST":
+    case 'GETALL':
+    case 'LIST':
       // Returns all trainees
       return getAllTrainees();
 
-    case "SEARCH":
+    case 'SEARCH':
       return searchTrainees(args);
 
     default:
       // Handles invalid or unknown subcommands
-      console.log("ERROR: Invalid trainee command");
-      return { error: "ERROR: Invalid trainee command" };
+      console.log('ERROR: Invalid trainee command');
+      return { error: 'ERROR: Invalid trainee command' };
   }
 }
