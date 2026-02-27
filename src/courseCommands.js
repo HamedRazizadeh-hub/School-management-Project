@@ -7,7 +7,7 @@ import { saveCourseData, loadCourseData, loadTraineeData } from './storage.js';
 function generateUniqueCourseId(courses) {
   let id;
   do {
-    id = Math.floor(10 + Math.random() * 90); // Generates a number between 10–99
+    id = Math.floor(Math.random() * 100000); // number between 0–99999
   } while (courses.some((c) => c.id === id));
   return id;
 }
@@ -19,7 +19,7 @@ function generateUniqueCourseId(courses) {
  */
 function addCourse(args) {
   if (args.length < 2) {
-    console.log('ERROR: Invalid course name');
+    console.log(chalk.red('ERROR: Invalid course name'));
     return { error: 'ERROR: Invalid course name' };
   }
 
@@ -47,7 +47,7 @@ function addCourse(args) {
  */
 function updateCourse(args) {
   if (args.length < 3) {
-    console.log('ERROR: Missing arguments for update course');
+    console.log(chalk.red('ERROR: Missing arguments for update course'));
     return { error: 'ERROR: Missing arguments for update course' };
   }
 
@@ -58,7 +58,7 @@ function updateCourse(args) {
   const course = courses.find((c) => c.id === id);
 
   if (!course) {
-    console.log(`Course with ID ${id} not found`);
+    console.log(chalk.yellow(`Course with ID ${id} not found`));
     return null;
   }
 
@@ -77,7 +77,7 @@ function updateCourse(args) {
  */
 function deleteCourse(args) {
   if (args.length < 1) {
-    console.log('ERROR: Invalid course ID for deletion');
+    console.log(chalk.red('ERROR: Invalid course ID for deletion'));
     return { error: 'ERROR: Invalid course ID for deletion' };
   }
 
@@ -104,7 +104,9 @@ function deleteCourse(args) {
  */
 function joinCourse(args) {
   if (args.length < 2) {
-    console.log('ERROR: Invalid course ID and trainee ID for joining');
+    console.log(
+      chalk.red('ERROR: Invalid course ID and trainee ID for joining')
+    );
     return { error: 'ERROR: Invalid course ID and trainee ID for joining' };
   }
 
@@ -118,11 +120,11 @@ function joinCourse(args) {
   const course = courses.find((c) => c.id === courseId);
 
   if (!trainee) {
-    console.log(`Trainee with ID ${traineeId} not found`);
+    console.log(chalk.yellow(`Trainee with ID ${traineeId} not found`));
     return null;
   }
   if (!course) {
-    console.log(`Course with ID ${courseId} not found`);
+    console.log(chalk.yellow(`Course with ID ${courseId} not found`));
     return null;
   }
 
@@ -132,7 +134,7 @@ function joinCourse(args) {
   }
 
   if (course.participants.includes(traineeId)) {
-    console.log(`Trainee already joined this course`);
+    console.log(chalk.yellow(`Trainee already joined this course`));
     return course;
   }
 
@@ -150,7 +152,9 @@ function joinCourse(args) {
  */
 function leaveCourse(args) {
   if (args.length < 2) {
-    console.log('ERROR: Invalid course ID and trainee ID for leaving');
+    console.log(
+      chalk.red('ERROR: Invalid course ID and trainee ID for leaving')
+    );
     return { error: 'ERROR: Invalid course ID and trainee ID for leaving' };
   }
 
@@ -161,12 +165,12 @@ function leaveCourse(args) {
   const course = courses.find((c) => c.id === courseId);
 
   if (!course) {
-    console.log(`Course with ID ${courseId} not found`);
+    console.log(chalk.yellow(`Course with ID ${courseId} not found`));
     return null;
   }
 
   if (!course.participants.includes(traineeId)) {
-    console.log(`Trainee is not enrolled in this course`);
+    console.log(chalk.yellow(`Trainee is not enrolled in this course`));
     return course;
   }
 
@@ -184,7 +188,7 @@ function leaveCourse(args) {
  */
 function getCourse(args) {
   if (args.length < 1) {
-    console.log('ERROR: Missing course ID');
+    console.log(chalk.red('ERROR: Missing course ID'));
     return { error: 'ERROR: Missing course ID' };
   }
 
@@ -193,7 +197,7 @@ function getCourse(args) {
   const course = courses.find((c) => c.id === id);
 
   if (!course) {
-    console.log(`Course with ID ${id} not found`);
+    console.log(chalk.yellow(`Course with ID ${id} not found`));
     return null;
   }
 
@@ -209,7 +213,7 @@ function getAllCourses() {
   const courses = loadCourseData();
 
   if (courses.length === 0) {
-    console.log('No courses found');
+    console.log(chalk.yellow('No courses found'));
     return [];
   }
 
@@ -252,7 +256,7 @@ export function handleCourseCommand(subcommand, args) {
       return getAllCourses();
 
     default:
-      console.log('ERROR: Invalid course command');
+      console.log(chalk.red('ERROR: Invalid course command'));
       return { error: 'ERROR: Invalid course command' };
   }
 }
