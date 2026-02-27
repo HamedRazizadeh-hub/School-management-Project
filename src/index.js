@@ -12,11 +12,9 @@ import { handleCourseCommand } from './courseCommands.js';
 export function startCLI() {
   const prompt = promptSync({ sigint: true });
 
-  console.log(
-    chalk.green(
-      'School Manager CLI: type "help" for a list of available commands "exit" to quit.'
-    )
-  );
+  console.log(chalk.green('Welcome to the Training Management CLI!'));
+  console.log(chalk.dim('Type "help" to see available commands.'));
+  console.log(chalk.dim('Type "exit" to quit.'));
 
   while (true) {
     try {
@@ -36,7 +34,7 @@ export function startCLI() {
 
       // Exit command
       if (normalizedInput === 'exit' || normalizedInput === 'quit') {
-        console.log(chalk.yellow('Exiting application. Goodbye.'));
+        console.log(chalk.yellow('Exiting CLI...'));
         break;
       }
 
@@ -58,7 +56,6 @@ Basic commands:
   course get <id>           - view a course
   course getall             - view all courses
 
-  course join <courseID> <traineeID> - add trainee to course
   course join <courseId> <traineeId>   - add trainee to course
   course leave <courseId> <traineeId>  - remove trainee from course
 
